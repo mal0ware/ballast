@@ -1,0 +1,11 @@
+This file was made by hand for the parser tests. The numbers are invented.
+It copies the layout of a daily momentum file from the French library.
+Missing data are indicated by -99.99 or -999.
+
+,Mom
+20000103,   0.56
+20000104,  -0.50
+20000105,   1.17
+20000201, -99.99
+
+Copyright notice line, as in the real files

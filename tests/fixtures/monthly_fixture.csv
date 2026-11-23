@@ -1,0 +1,15 @@
+This file was made by hand for the parser tests. The numbers are invented.
+It copies the layout of a monthly file from the French library.
+
+,Mkt-RF,SMB,HML,RF
+200001,   1.25,  -0.50,   0.75,   0.10
+200002,  -2.00,   1.50,  -0.25,   0.11
+200003,   0.40,  -1.10,   0.05,   0.12
+200004, -99.99,   0.00,  -999,   0.13
+
+ Annual Factors: January-December
+,Mkt-RF,SMB,HML,RF
+  2000,  11.00,  -2.00,  -4.50,   3.00
+  2001,  -5.00,   4.50,  -6.25,   3.50
+
+Copyright notice line, as in the real files
