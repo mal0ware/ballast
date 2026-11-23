@@ -1,0 +1,127 @@
+table,factor,statistic,paper,ours,difference,differs
+COWY Table 1,MKT,sr_original,0.420000,0.420100,0.000100,False
+COWY Table 1,MKT,sr_managed,0.510000,0.512600,0.002600,False
+COWY Table 1,MKT,sr_diff,0.090000,0.092500,0.002500,False
+COWY Table 1,MKT,sr_p,0.300000,0.310100,0.010100,True
+COWY Table 1,MKT,correlation,0.630000,0.630500,0.000500,False
+COWY Table 1,SMB,sr_original,0.230000,0.226100,-0.003900,False
+COWY Table 1,SMB,sr_managed,0.080000,0.075800,-0.004200,False
+COWY Table 1,SMB,sr_diff,-0.150000,-0.150300,-0.000300,False
+COWY Table 1,SMB,sr_p,0.090000,0.094500,0.004500,False
+COWY Table 1,SMB,correlation,0.630000,0.635700,0.005700,True
+COWY Table 1,HML,sr_original,0.400000,0.400700,0.000700,False
+COWY Table 1,HML,sr_managed,0.380000,0.367400,-0.012600,True
+COWY Table 1,HML,sr_diff,-0.020000,-0.033300,-0.013300,True
+COWY Table 1,HML,sr_p,0.860000,0.737800,-0.122200,True
+COWY Table 1,HML,correlation,0.570000,0.557900,-0.012100,True
+COWY Table 1,MOM,sr_original,0.480000,0.475100,-0.004900,False
+COWY Table 1,MOM,sr_managed,0.990000,0.962200,-0.027800,True
+COWY Table 1,MOM,sr_diff,0.500000,0.487200,-0.012800,True
+COWY Table 1,MOM,sr_p,0.000000,0.000000,0.000000,False
+COWY Table 1,MOM,correlation,0.480000,0.470400,-0.009600,True
+COWY Table 1,RMW,sr_original,0.380000,0.405600,0.025600,True
+COWY Table 1,RMW,sr_managed,0.510000,0.566500,0.056500,True
+COWY Table 1,RMW,sr_diff,0.130000,0.160800,0.030800,True
+COWY Table 1,RMW,sr_p,0.290000,0.201000,-0.089000,True
+COWY Table 1,RMW,correlation,0.590000,0.584500,-0.005500,True
+COWY Table 1,CMA,sr_original,0.530000,0.534200,0.004200,False
+COWY Table 1,CMA,sr_managed,0.400000,0.392500,-0.007500,True
+COWY Table 1,CMA,sr_diff,-0.130000,-0.141700,-0.011700,True
+COWY Table 1,CMA,sr_p,0.230000,0.193900,-0.036100,True
+COWY Table 1,CMA,correlation,0.680000,0.687100,0.007100,True
+COWY Table 3 Panel A,MKT,alpha,4.630000,4.606700,-0.023300,True
+COWY Table 3 Panel A,MKT,alpha_t,3.080000,3.069500,-0.010500,True
+COWY Table 3 Panel A,MKT,beta,0.630000,0.630500,0.000500,False
+COWY Table 3 Panel A,MKT,r2_adj,0.400000,0.397000,-0.003000,False
+COWY Table 3 Panel A,MKT,appraisal_ratio,0.320000,0.319000,-0.001000,False
+COWY Table 3 Panel A,MKT,c_star,10.330000,10.311300,-0.018700,True
+COWY Table 3 Panel A,SMB,alpha,-0.760000,-0.749500,0.010500,True
+COWY Table 3 Panel A,SMB,alpha_t,-0.870000,-0.865100,0.004900,False
+COWY Table 3 Panel A,SMB,beta,0.630000,0.635700,0.005700,True
+COWY Table 3 Panel A,SMB,r2_adj,0.400000,0.403500,0.003500,False
+COWY Table 3 Panel A,SMB,appraisal_ratio,-0.090000,-0.087900,0.002100,False
+COWY Table 3 Panel A,SMB,c_star,2.630000,2.625400,-0.004600,False
+COWY Table 3 Panel A,HML,alpha,1.870000,1.753300,-0.116700,True
+COWY Table 3 Panel A,HML,alpha_t,1.880000,1.724700,-0.155300,True
+COWY Table 3 Panel A,HML,beta,0.570000,0.557900,-0.012100,True
+COWY Table 3 Panel A,HML,r2_adj,0.330000,0.310600,-0.019400,True
+COWY Table 3 Panel A,HML,appraisal_ratio,0.190000,0.173300,-0.016700,True
+COWY Table 3 Panel A,HML,c_star,2.950000,2.924400,-0.025600,True
+COWY Table 3 Panel A,MOM,alpha,12.390000,12.171300,-0.218700,True
+COWY Table 3 Panel A,MOM,alpha_t,7.310000,7.095700,-0.214300,True
+COWY Table 3 Panel A,MOM,beta,0.480000,0.470400,-0.009600,True
+COWY Table 3 Panel A,MOM,r2_adj,0.230000,0.220500,-0.009500,True
+COWY Table 3 Panel A,MOM,appraisal_ratio,0.860000,0.836800,-0.023200,True
+COWY Table 3 Panel A,MOM,c_star,4.600000,4.542000,-0.058000,True
+COWY Table 3 Panel A,RMW,alpha,2.230000,2.535700,0.305700,True
+COWY Table 3 Panel A,RMW,alpha_t,2.570000,2.898300,0.328300,True
+COWY Table 3 Panel A,RMW,beta,0.590000,0.584500,-0.005500,True
+COWY Table 3 Panel A,RMW,r2_adj,0.340000,0.340600,0.000600,False
+COWY Table 3 Panel A,RMW,appraisal_ratio,0.360000,0.405600,0.045600,True
+COWY Table 3 Panel A,RMW,c_star,1.480000,1.450700,-0.029300,True
+COWY Table 3 Panel A,CMA,alpha,0.260000,0.173900,-0.086100,True
+COWY Table 3 Panel A,CMA,alpha_t,0.390000,0.272400,-0.117600,True
+COWY Table 3 Panel A,CMA,beta,0.680000,0.687100,0.007100,True
+COWY Table 3 Panel A,CMA,r2_adj,0.460000,0.471300,0.011300,True
+COWY Table 3 Panel A,CMA,appraisal_ratio,0.050000,0.034900,-0.015100,True
+COWY Table 3 Panel A,CMA,c_star,1.530000,1.485400,-0.044600,True
+COWY Table 5 Panel A,MKT,sr_combo,0.420000,0.415200,-0.004800,False
+COWY Table 5 Panel A,MKT,sr_original,0.460000,0.457900,-0.002100,False
+COWY Table 5 Panel A,MKT,sr_diff,-0.040000,-0.042600,-0.002600,False
+COWY Table 5 Panel A,MKT,sr_p,0.640000,0.617300,-0.022700,True
+COWY Table 5 Panel A,MKT,sr_expost,0.530000,0.528200,-0.001800,False
+COWY Table 5 Panel A,MKT,cer_combo,1.560000,1.543200,-0.016800,True
+COWY Table 5 Panel A,MKT,cer_original,1.750000,1.760100,0.010100,True
+COWY Table 5 Panel A,MKT,cer_diff,-0.190000,-0.216900,-0.026900,True
+COWY Table 5 Panel A,MKT,cer_p,0.830000,0.811400,-0.018600,True
+COWY Table 5 Panel A,MKT,cer_expost,2.790000,2.789800,-0.000200,False
+COWY Table 5 Panel A,SMB,sr_combo,0.140000,0.128000,-0.012000,True
+COWY Table 5 Panel A,SMB,sr_original,0.190000,0.187400,-0.002600,False
+COWY Table 5 Panel A,SMB,sr_diff,-0.060000,-0.059400,0.000600,False
+COWY Table 5 Panel A,SMB,sr_p,0.370000,0.361600,-0.008400,True
+COWY Table 5 Panel A,SMB,sr_expost,0.260000,0.250000,-0.010000,True
+COWY Table 5 Panel A,SMB,cer_combo,0.000000,-0.033100,-0.033100,True
+COWY Table 5 Panel A,SMB,cer_original,0.380000,0.347700,-0.032300,True
+COWY Table 5 Panel A,SMB,cer_diff,-0.370000,-0.380800,-0.010800,True
+COWY Table 5 Panel A,SMB,cer_p,0.270000,0.258100,-0.011900,True
+COWY Table 5 Panel A,SMB,cer_expost,0.670000,0.625200,-0.044800,True
+COWY Table 5 Panel A,HML,sr_combo,0.380000,0.374900,-0.005100,True
+COWY Table 5 Panel A,HML,sr_original,0.430000,0.441500,0.011500,True
+COWY Table 5 Panel A,HML,sr_diff,-0.060000,-0.066600,-0.006600,True
+COWY Table 5 Panel A,HML,sr_p,0.410000,0.332700,-0.077300,True
+COWY Table 5 Panel A,HML,sr_expost,0.500000,0.496800,-0.003200,False
+COWY Table 5 Panel A,HML,cer_combo,1.410000,1.384700,-0.025300,True
+COWY Table 5 Panel A,HML,cer_original,1.610000,1.624400,0.014400,True
+COWY Table 5 Panel A,HML,cer_diff,-0.200000,-0.239700,-0.039700,True
+COWY Table 5 Panel A,HML,cer_p,0.730000,0.679200,-0.050800,True
+COWY Table 5 Panel A,HML,cer_expost,2.470000,2.467900,-0.002100,False
+COWY Table 5 Panel A,MOM,sr_combo,0.920000,0.889400,-0.030600,True
+COWY Table 5 Panel A,MOM,sr_original,0.490000,0.477400,-0.012600,True
+COWY Table 5 Panel A,MOM,sr_diff,0.440000,0.412000,-0.028000,True
+COWY Table 5 Panel A,MOM,sr_p,0.000000,0.000100,0.000100,False
+COWY Table 5 Panel A,MOM,sr_expost,0.990000,0.967600,-0.022400,True
+COWY Table 5 Panel A,MOM,cer_combo,8.470000,7.883800,-0.586200,True
+COWY Table 5 Panel A,MOM,cer_original,2.290000,2.211000,-0.079000,True
+COWY Table 5 Panel A,MOM,cer_diff,6.180000,5.672900,-0.507100,True
+COWY Table 5 Panel A,MOM,cer_p,0.000000,0.000300,0.000300,False
+COWY Table 5 Panel A,MOM,cer_expost,9.870000,9.363200,-0.506800,True
+COWY Table 5 Panel A,RMW,sr_combo,0.440000,0.510100,0.070100,True
+COWY Table 5 Panel A,RMW,sr_original,0.310000,0.328400,0.018400,True
+COWY Table 5 Panel A,RMW,sr_diff,0.130000,0.181700,0.051700,True
+COWY Table 5 Panel A,RMW,sr_p,0.530000,0.383000,-0.147000,True
+COWY Table 5 Panel A,RMW,sr_expost,0.580000,0.632900,0.052900,True
+COWY Table 5 Panel A,RMW,cer_combo,1.960000,2.592700,0.632700,True
+COWY Table 5 Panel A,RMW,cer_original,0.910000,0.982300,0.072300,True
+COWY Table 5 Panel A,RMW,cer_diff,1.040000,1.610400,0.570400,True
+COWY Table 5 Panel A,RMW,cer_p,0.570000,0.394600,-0.175400,True
+COWY Table 5 Panel A,RMW,cer_expost,3.420000,4.006100,0.586100,True
+COWY Table 5 Panel A,CMA,sr_combo,0.520000,0.525600,0.005600,True
+COWY Table 5 Panel A,CMA,sr_original,0.560000,0.561300,0.001300,False
+COWY Table 5 Panel A,CMA,sr_diff,-0.030000,-0.035700,-0.005700,True
+COWY Table 5 Panel A,CMA,sr_p,0.200000,0.138900,-0.061100,True
+COWY Table 5 Panel A,CMA,sr_expost,0.640000,0.646600,0.006600,True
+COWY Table 5 Panel A,CMA,cer_combo,2.740000,2.757200,0.017200,True
+COWY Table 5 Panel A,CMA,cer_original,3.090000,3.136500,0.046500,True
+COWY Table 5 Panel A,CMA,cer_diff,-0.350000,-0.379300,-0.029300,True
+COWY Table 5 Panel A,CMA,cer_p,0.210000,0.138400,-0.071600,True
+COWY Table 5 Panel A,CMA,cer_expost,4.040000,4.181500,0.141500,True

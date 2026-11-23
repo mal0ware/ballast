@@ -1,0 +1,32 @@
+{
+  "source": "Kenneth R. French Data Library",
+  "downloaded_utc": "2026-11-23T06:24:25Z",
+  "last_month_in_data": "2026-09",
+  "last_day_in_data": "2026-09-30",
+  "files": {
+    "F-F_Research_Data_Factors.csv": {
+      "last_period": "2026-09",
+      "sha256_zip": "b03d39e4bb253dda0f14893db3b78e64b40b8d6549a0fc0fd4111dae84c98618"
+    },
+    "F-F_Research_Data_Factors_daily.csv": {
+      "last_period": "2026-09-30 00:00:00",
+      "sha256_zip": "96c23b88e651cbfff3740a53f8225e59ee39893371e96385a1d8125ec2cd9c89"
+    },
+    "F-F_Momentum_Factor.csv": {
+      "last_period": "2026-09",
+      "sha256_zip": "27ed60e5b2caa9ea334a261cddfa864a9926f6bf45e9677c95dfd835c5abb315"
+    },
+    "F-F_Momentum_Factor_daily.csv": {
+      "last_period": "2026-09-30 00:00:00",
+      "sha256_zip": "e56d5bc845544e2993e77353b12c611cfce3149ef754f9b59fc67904ddadd369"
+    },
+    "F-F_Research_Data_5_Factors_2x3.csv": {
+      "last_period": "2026-09",
+      "sha256_zip": "17d7a575e71d6764a70ddec3f8d887756c0eebf3a60f64d6ba95d2adde3fed26"
+    },
+    "F-F_Research_Data_5_Factors_2x3_daily.csv": {
+      "last_period": "2026-09-30 00:00:00",
+      "sha256_zip": "e58577223032aa45071a46686f7068900c371b516c9eb04e28e974c34264f84f"
+    }
+  }
+}

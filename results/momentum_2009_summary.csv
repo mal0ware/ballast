@@ -1,0 +1,5 @@
+series,crash_return,worst_month,window_return,window_max_drawdown,full_sample_skewness,full_sample_worst_month
+unmanaged,-0.493655,-0.343600,-0.403689,-0.577765,-3.016274,-0.526100
+managed (full-sample c),-0.013305,-0.062708,0.089805,-0.065728,1.228332,-0.316622
+real-time combination,-0.081013,-0.078428,0.063292,-0.151133,-0.321052,-0.340500
+real-time unmanaged benchmark,-0.346122,-0.230181,-0.262982,-0.412638,-1.537144,-0.230181
