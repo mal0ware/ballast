@@ -72,6 +72,12 @@ def spanning_table(
             "alpha_ff3_se": fit_ff3.alpha_se,
             "alpha_ff3_t": fit_ff3.alpha_t,
             "c_star": 1e4 * m.c,
+            "weight_p01": float(m.weight.quantile(0.01)),
+            "weight_p50": float(m.weight.quantile(0.50)),
+            "weight_p99": float(m.weight.quantile(0.99)),
+            # Average size of the monthly change in the position, in units of
+            # the factor's own notional. A rough gauge of the extra trading.
+            "mean_abs_weight_change": float(m.weight.diff().abs().mean()),
         }
     return pd.DataFrame.from_dict(rows, orient="index").rename_axis("factor")
 
