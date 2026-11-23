@@ -139,7 +139,8 @@ def build_results(data: FactorData, out_dir: Path, figures: bool = True) -> dict
         },
     }
     vintage_path = out_dir / "data_vintage.json"
-    vintage_path.write_text(json.dumps(vintage, indent=2) + "\n", encoding="utf-8")
+    vintage_text = json.dumps(vintage, indent=2) + "\n"
+    vintage_path.write_text(vintage_text, encoding="utf-8", newline="\n")
     written["data_vintage"] = vintage_path
 
     headline = (
