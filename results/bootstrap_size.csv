@@ -1,0 +1,5 @@
+design,months,simulations,block,draws,reject_jobson_korkie,reject_bootstrap
+iid normal,120,1000,6,499,0.053000,0.043000
+iid normal,480,1000,6,499,0.042000,0.039000
+"GARCH(1,1), t(5) shocks",120,1000,6,499,0.068000,0.049000
+"GARCH(1,1), t(5) shocks",480,1000,6,499,0.050000,0.043000

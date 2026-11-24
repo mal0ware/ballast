@@ -1,12 +1,14 @@
 # Sources, formulas and comparison
 
-Every number here comes from `results/`, built by `scripts/reproduce.py` from French library files downloaded on 2026-11-23. In the comparison tables each cell is "ours / paper", and a star marks a cell that differs from the printed figure after rounding the way the paper rounds.
+Every number here comes from `results/`, built by `scripts/reproduce.py` from French library files downloaded on 2026-11-23. Sections marked as added here go beyond the two papers. In the comparison tables each cell is "ours / paper", and a star marks a cell that differs from the printed figure after rounding the way the paper rounds.
 
 ## Citations and the versions read
 
 1. Alan Moreira and Tyler Muir, "Volatility-Managed Portfolios", Journal of Finance 72(4), 2017, 1611-1644. I read NBER working paper 22208 (April 2016), which is public. I did not read the journal version, so its table and equation numbers may differ from the ones cited below. Short name: MM.
 2. Scott Cederburg, Michael S. O'Doherty, Feifei Wang and Xuemin (Sterling) Yan, "On the performance of volatility-managed portfolios", Journal of Financial Economics 138(1), 2020, 95-117. I read the published article from an author's university page. I did not read its Internet Appendix. Short name: COWY.
 3. Kent Daniel and Tobias J. Moskowitz, "Momentum crashes", Journal of Financial Economics 122(2), 2016, 221-247. I read NBER working paper 20439 (August 2014). Short name: DM.
+4. Olivier Ledoit and Michael Wolf, "Robust performance hypothesis testing with the Sharpe ratio", Journal of Empirical Finance 15(5), 2008, 850-859. I did not read it. The bootstrap test below was written from the published description of their method, and its size was checked by simulation. Short name: LW.
+5. Whitney Newey and Kenneth West (1987) for the HAC standard error, and Sture Holm (1979) for the step-down multiple-testing adjustment. Both are textbook methods; I did not read the originals.
 
 ## Formulas implemented
 
@@ -61,6 +63,39 @@ Jobson and Korkie (1981) with Memmel's (2003) correction, as written in COWY foo
 DeMiguel, Garlappi and Uppal (2009), as written in COWY footnote 19: the delta method on `(m_i, m_j, s_i^2, s_j^2)` with gradient `(1, -1, -gamma/2, gamma/2)`. Multiplied out, the variance of the CER difference is `(s_i^2 + s_j^2 - 2 s_ij + gamma^2 / 2 * (s_i^4 + s_j^4 - 2 s_ij^2)) / T`.
 
 I took both statistics from COWY's footnotes and did not read the three original papers. P-values are two-sided from the standard normal.
+
+### Newey-West standard errors (added here)
+
+The papers use White (HC0) errors. Alongside them the code reports Newey-West errors: the meat of the sandwich is `sum_t s_t s_t' + sum_{l=1}^{L} (1 - l / (L + 1)) (G_l + G_l')`, with `s_t` the regressor row times the residual and `G_l = sum_t s_t s_{t-l}'`. The lag length is `L = floor(4 (T / 100)^(2/9))`, which is 6 for the full samples and 4 for the post-sample windows. There is no small-sample correction. Code: `ols(..., "HAC")`, checked against statsmodels.
+
+### Trading costs (added here)
+
+The managed factor's position in month `t` is `w[t] = c / sigma2[t-1]`. Moving from `w[t-1]` to `w[t]` trades `|w[t] - w[t-1]|` units of the factor. At a cost of `k` basis points per unit, the net managed return is `f_sigma[t] - k / 10000 * |w[t] - w[t-1]|`. The plain factor holds one unit throughout and pays nothing. The first month of each sample is charged nothing.
+
+The net managed return is regressed on the gross plain factor. OLS is linear in the dependent variable, so net alpha is `alpha - k * a_turn`, where `a_turn` is the alpha from regressing the turnover series on the factor. The break-even cost is `alpha / a_turn`. The code also finds, by root search, the highest cost at which the Newey-West t-statistic is still 1.96.
+
+In real time, both the combination and the plain benchmark pay `k` per unit change in their own position `y[t]`. The break-even is the cost at which their Sharpe ratios are equal, found by root search between 0 and 1,000 bps.
+
+### The block-bootstrap Sharpe test (added here, after LW)
+
+The Sharpe-ratio difference is a function of `v = (m_i, m_j, E[r_i^2], E[r_j^2])`: `d = m_i / sqrt(g_i - m_i^2) - m_j / sqrt(g_j - m_j^2)`. The delta method gives `se(d) = sqrt(grad' Psi grad / T)`, where `Psi` is the long-run covariance of the four centred moment terms. On the data, `Psi` is estimated with Newey-West weights. LW use a prewhitened quadratic-spectral kernel instead.
+
+The bootstrap draws circular blocks of `b = 6` months until it has at least `T` months. On each draw it computes `d*` and a block standard error: the gradient-weighted moment terms are summed within each block, divided by `sqrt(b)`, and `Psi*` is the mean square of those sums. The statistic is `|d* - d| / se*`. The two-sided p-value is `(1 + #{|d* - d| / se* >= |d| / se}) / (draws + 1)` with 4,999 draws. LW choose `b` by a calibration step; here it is fixed at six months, and `results/bootstrap_block_length.csv` shows the p-values for 1 to 24 months.
+
+`results/bootstrap_size.csv` checks the size. Each design draws 1,000 samples of two series with equal Sharpe ratios and correlation 0.6. One design is independent normal. The other has Student-t(5) shocks and a shared GARCH(1,1) volatility (`omega = 0.05`, `alpha = 0.10`, `beta = 0.85`), so it has fat tails and volatility clusters.
+
+| Design | Months | Jobson-Korkie rejects | Bootstrap rejects |
+|---|---:|---:|---:|
+| Independent normal | 120 | 5.3% | 4.3% |
+| Independent normal | 480 | 4.2% | 3.9% |
+| GARCH(1,1), t(5) shocks | 120 | 6.8% | 4.9% |
+| GARCH(1,1), t(5) shocks | 480 | 5.0% | 4.3% |
+
+The nominal level is 5%. With 1,000 samples each rate has a standard error of about 0.7 points. The bootstrap is slightly conservative. Jobson-Korkie over-rejects with fat tails in the short sample and is close to 5% otherwise.
+
+### Multiple testing (added here)
+
+Each table tests six factors. Holm's step-down adjustment sorts the six p-values, multiplies the `r`-th smallest by `7 - r`, and makes the sequence non-decreasing. It controls the chance of any false rejection among the six at the stated level, under any dependence between the tests. The adjustment is applied within one table and one cost level. It is not applied across samples, cost levels or tables.
 
 ### Momentum crashes (DM)
 
@@ -150,24 +185,28 @@ The tables COWY build on 103 strategies (Tables 2, 4, 6, 7, 8 and 9) and Table 5
 
 ## Why the cells differ
 
-I think the cause is the data vintage, and I could not confirm it.
+The cause is unexplained. The data vintage is the main candidate, and it is untested.
 
 - The French library is rebuilt whenever CRSP and Compustat are updated, and past returns change. The files used here say they were created from the 202609 CRSP database. MM's files date from 2015 and COWY's from about 2017. Neither old vintage is published.
 - The sample sizes match exactly in every column, so the samples and the lag alignment are right.
 - Where the method can be checked without the data, it matches: the market's `c*`, the ex post [S3] cells for the market and HML, and all the Sharpe ratios of the original market, SMB, HML and momentum agree to the printed digit.
-- The gaps are smallest for the market and largest for RMW, the factor that depends most on accounting data. RMW's own Sharpe ratio over COWY's sample is 0.41 here against 0.38 in the paper, before any managing is done. That difference can only come from the input returns.
+- The gaps are smallest for the market and largest for RMW, the factor that depends most on accounting data. RMW's own Sharpe ratio over COWY's sample is 0.41 here against 0.38 in the paper, before any managing is done. That difference can only come from the input returns. It shows the inputs differ; it does not show that the difference explains the other gaps, such as RMW's RMSE of 21.84 against 20.16.
+
+Running this code on an archived copy of the French files from 2015 to 2017 would test the vintage explanation. If those files reproduced the printed cells, the code is right and the data moved. No archived copy was used here.
 
 A second possible cause for MM is the standard-error formula. "Adjust for heteroscedasticity" could mean HC0 or HC1. With over 600 observations the two differ by less than 0.2%, which is too small to explain any starred cell.
 
 ## Choices the papers leave open
 
 - MM's sample end (April 2015), inferred from the sample sizes.
-- White (HC0) standard errors throughout. COWY say White (1980); MM do not say which.
+- White (HC0) standard errors for every comparison with the papers. COWY say White (1980); MM do not say which. Newey-West errors are reported beside them and used for the cost tables and the Holm adjustment.
 - Sample standard deviations and covariances divide by `n - 1`.
 - The leverage cap is applied by clipping `y[t]` to `[-5, 5]`.
 - The ex post optimal strategy [S3] is uncapped, with `c` and the weights taken from the out-of-sample months. COWY's caption can be read as capping it. The market and HML cells match the paper to the digit this way.
 - P-values are two-sided.
 - A month's realized variance needs at least two daily returns. This never binds in the real data.
+- Costs are charged per unit of the factor's notional, at 0, 10, 25 and 50 bps, on the change in position only. The first month is free.
+- The bootstrap uses six-month blocks and 4,999 draws, seeded so the p-values are reproducible.
 
 ## Variants tried
 
@@ -178,20 +217,40 @@ Nothing was tuned to move a result. The full list of things run more than one wa
 
 The variance definition, the training length, the window type, the risk aversion and the cap were each run once, at the papers' values. The code supports a rolling window and other caps, and tests exercise them on synthetic data, but no real-data result was produced with them.
 
+The cost levels (10, 25 and 50 bps per unit of turnover) were named in the brief for this pass and run once. The six-month block, the 4,999 draws, the Newey-West lag rule and the Holm adjustment were each run at one setting. The block-length table reports the other block lengths it covers; none was used for a headline number.
+
 ## New results
 
 These are not in either paper.
 
-| Factor | Alpha, 1926-2026 (%/yr) | t | Alpha, 2015-05 to 2026-09 | t | Real-time Sharpe gain to 2026-09 [p] | Real-time Sharpe gain, 2017-01 to 2026-09 [p] |
-|---|---:|---:|---:|---:|---:|---:|
-| MKT | 4.51 | 3.09 | 1.22 | 0.29 | -0.06 [0.43] | -0.12 [0.58] |
-| SMB | -0.54 | -0.64 | -1.42 | -0.89 | -0.05 [0.45] | +0.05 [0.30] |
-| HML | 1.57 | 1.57 | -4.13 | -1.64 | -0.03 [0.69] | -0.10 [0.02] |
-| MOM | 11.95 | 7.62 | 3.31 | 1.10 | +0.40 [0.00] | +0.13 [0.56] |
-| RMW | 2.79 | 3.39 | 1.99 | 1.18 | +0.17 [0.34] | +0.05 [0.70] |
-| CMA | 0.38 | 0.58 | -2.30 | -1.35 | -0.03 [0.07] | -0.02 [0.04] |
+### Before costs, extended and post-sample
 
-The post-sample windows are 137 and 117 months. HML and CMA show significant Sharpe-ratio losses after 2016, but both strategies have negative Sharpe ratios in that window with or without managing, the differences are 0.10 and 0.02, and the CER differences are +0.06 and -0.02 with p-values of 0.91 and 0.90. I would not read much into either.
+| Factor | Alpha, 1926-2026 (%/yr) | t, White | t, NW | Alpha, 2015-05 to 2026-09 | t, NW | Real-time Sharpe gain to 2026-09 [JK p, bootstrap p] | Real-time Sharpe gain, 2017-01 to 2026-09 [JK p, bootstrap p] |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| MKT | 4.51 | 3.09 | 2.82 | 1.22 | 0.28 | -0.06 [0.43, 0.53] | -0.12 [0.58, 0.67] |
+| SMB | -0.54 | -0.64 | -0.50 | -1.42 | -0.91 | -0.05 [0.45, 0.53] | +0.05 [0.30, 0.37] |
+| HML | 1.57 | 1.57 | 1.37 | -4.13 | -1.62 | -0.03 [0.69, 0.71] | -0.10 [0.017, 0.042] |
+| MOM | 11.95 | 7.62 | 6.56 | 3.31 | 1.14 | +0.40 [0.000, 0.004] | +0.13 [0.56, 0.56] |
+| RMW | 2.79 | 3.39 | 3.17 | 1.99 | 1.17 | +0.17 [0.34, 0.34] | +0.05 [0.70, 0.66] |
+| CMA | 0.38 | 0.58 | 0.61 | -2.30 | -1.37 | -0.03 [0.07, 0.07] | -0.02 [0.045, 0.035] |
+
+The post-sample windows are 137 and 117 months. HML and CMA show Sharpe-ratio losses after 2016 that are significant on a single test, by both Jobson-Korkie and the bootstrap. After the Holm adjustment across six factors their p-values are 0.21. Both strategies have negative Sharpe ratios for these two factors in that window, with or without managing, and the CER differences are +0.06 and -0.02 with p-values of 0.91 and 0.90. I would not read much into either.
+
+The block bootstrap changes no 5% verdict in COWY's Tables 1 and 5 for these six factors. It raises momentum's p-values, from 0.00001 to 0.008 in Table 1 and from 0.0001 to 0.006 in Table 5, and both stay significant after Holm (0.046 and 0.034).
+
+### After costs
+
+The tables in the README use the extended sample. The paper samples give break-even costs within five bps of those. Over the post-sample months, before costs, no factor has a significant alpha, so the cost tables there only lower numbers that were already insignificant. The break-even costs there are 15 bps for the market, 53 for momentum and 26 for RMW, and the real-time momentum gain breaks even at 27 bps. All are in `results/costs_in_sample.csv` and `results/costs_real_time.csv`.
+
+## Questions a reader may ask
+
+Why White (HC0) errors and not Newey-West? HC0 is what the papers state, so the replication uses it. Managed returns have volatility clusters, so serial correlation in the squared residuals is a fair worry. With six lags, Newey-West lowers the t-statistics of the significant alphas (over 1926 to 2015: market 3.15 to 2.90, momentum 7.47 to 6.49, RMW 3.14 to 2.96) and changes no verdict at 5%. Both are reported in `results/table1_*.csv`.
+
+What about testing six factors at once? With six independent tests at 5% and all six nulls true, the chance of at least one false rejection is about 26%. After Holm's adjustment, the in-sample alphas of the market, momentum and RMW stay significant before costs (Holm p 0.015, under 0.001 and 0.015 over 1926 to 2015). In real time only momentum's gain does (0.034 over the paper sample, 0.024 to 2026). With costs of 10 bps per unit of turnover, only momentum's in-sample alpha survives the adjustment, and its real-time gain does not (Holm p 0.067 to 2026).
+
+What happens after costs? See the README tables and `results/costs_*.csv`. The in-sample break-even costs are 50 bps for the market, 112 for momentum and 39 for RMW over 1926 to 2026. The real-time momentum gain breaks even at 76 bps and is no longer significant on its own at 50 bps (bootstrap p 0.29).
+
+Does the Jobson-Korkie test's normality assumption matter here? Before costs it changes no verdict: the bootstrap gives larger p-values for momentum and the same 5% verdicts in every table. In the cost tables some single-test verdicts differ, including momentum's real-time gain at 25 bps over the paper sample (Jobson-Korkie p 0.008, bootstrap p 0.057). In the size simulation Jobson-Korkie rejects 6.8% of the time with fat tails over 120 months.
 
 The momentum example is also new in its details. The numbers are in the README and in `results/momentum_2009_*.csv`.
 
@@ -201,4 +260,6 @@ The momentum example is also new in its details. The numbers are in the README a
 - The cause of the cell differences.
 - MM's exact sample end and standard-error formula.
 - The original statements of the Jobson-Korkie, Memmel and DeMiguel-Garlappi-Uppal statistics. The formulas are as COWY print them; the simulation test shows both reject about 5% of the time when the null is true.
+- Ledoit and Wolf (2008) itself. The bootstrap follows the published description of their method, with the two simplifications listed above. Its size is checked by simulation, not against their code or their published examples.
+- What trading these factors costs. The cost levels are round numbers, not estimates.
 - Whether COWY cap the ex post strategy.
