@@ -4,8 +4,9 @@ Usage:
     uv run python scripts/reproduce.py            # real data from data/, writes results/
     uv run python scripts/reproduce.py --fast     # seeded synthetic data, writes a temp dir
 
-``--fast`` needs no download and is what CI runs. Its numbers are not findings,
-so it never writes into ``results/`` unless ``--out`` says so.
+``--fast`` needs no download and is what CI runs. It also cuts the bootstrap to
+199 draws and the size study to 20 samples per design. Its numbers are not
+findings, so it never writes into ``results/`` unless ``--out`` says so.
 """
 
 from __future__ import annotations
@@ -35,7 +36,10 @@ def main() -> int:
     else:
         data = load_factors(args.data_dir)
         out_dir = args.out or Path("results")
-    written = build_results(data, out_dir)
+    if args.fast:
+        written = build_results(data, out_dir, draws=199, size_sims=20)
+    else:
+        written = build_results(data, out_dir)
     for name, path in written.items():
         print(f"{name:28s} {path}")
     print(f"done in {time.perf_counter() - started:.1f}s; data through {data.monthly.index[-1]}")

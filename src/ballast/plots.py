@@ -1,4 +1,4 @@
-"""The two figures. Colours are a validated two-series pair; text stays in ink."""
+"""The three figures. Colours are a validated pair and a one-hue ramp; text stays in ink."""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
+from scipy.stats import norm
 
 from ballast._types import Array
 
@@ -50,7 +51,8 @@ def _interval_panel(
     """Point estimates with 95% intervals, one cluster per factor."""
     _style(ax)
     x = np.arange(len(factors))
-    offsets = np.linspace(-0.14, 0.14, len(series)) if len(series) > 1 else np.zeros(1)
+    spread = min(0.3, 0.14 * (len(series) - 1))
+    offsets = np.linspace(-spread, spread, len(series)) if len(series) > 1 else np.zeros(1)
     for (label, colour, estimate, half_width), offset in zip(series, offsets, strict=True):
         ax.errorbar(
             x + offset,
@@ -115,6 +117,62 @@ def headline_figure(
     )
     fig.tight_layout()
     _save(fig, path)
+
+
+#: Ordinal blue ramp for cost levels, light (cheapest) to dark (dearest).
+COST_RAMP = ("#86b6ef", "#3987e5", "#1c5cab", "#0d366b")
+
+
+def costs_figure(in_sample: pd.DataFrame, real_time: pd.DataFrame, path: Path) -> None:
+    """Left: in-sample alpha net of costs. Right: real-time Sharpe gain net of costs.
+
+    Both tables are indexed by ``(factor, cost_bps)``. Left bars are 95%
+    Newey-West intervals; right bars are the interval implied by the
+    Jobson-Korkie z-statistic.
+    """
+    factors = list(dict.fromkeys(in_sample.index.get_level_values("factor")))
+    costs = list(dict.fromkeys(in_sample.index.get_level_values("cost_bps")))
+    if len(costs) > len(COST_RAMP):
+        raise ValueError("more cost levels than ramp colours")
+    fig, (left, right) = plt.subplots(1, 2, figsize=(10.5, 4.2), facecolor=SURFACE)
+
+    def label(bps: float) -> str:
+        return "gross" if bps == 0 else f"{bps:g} bps"
+
+    left_series = []
+    right_series = []
+    for bps, colour in zip(costs, COST_RAMP, strict=False):
+        a = in_sample.xs(bps, level="cost_bps").loc[factors]
+        left_series.append(
+            (label(bps), colour, a["alpha"].to_numpy(), 1.96 * a["alpha_se_nw"].to_numpy())
+        )
+        r = real_time.xs(bps, level="cost_bps").loc[factors]
+        diff = r["sr_diff"].to_numpy()
+        # Half-width from the JK z: |diff / z| is the implied standard error.
+        z = norm_ppf_from_p(r["sr_p"].to_numpy())
+        right_series.append((label(bps), colour, diff, 1.96 * np.abs(diff) / z))
+    _interval_panel(
+        left,
+        factors,
+        left_series,
+        "Alpha of managed on unmanaged (% per year)",
+        "In sample, after trading costs",
+    )
+    _interval_panel(
+        right,
+        factors,
+        right_series,
+        "Sharpe ratio, combination minus unmanaged (annual)",
+        "In real time, after trading costs",
+    )
+    fig.tight_layout()
+    _save(fig, path)
+
+
+def norm_ppf_from_p(p: Array) -> Array:
+    """``|z|`` from a two-sided normal p-value."""
+    z: Array = norm.isf(np.asarray(p, dtype=float) / 2.0)
+    return z
 
 
 def momentum_figure(monthly: pd.DataFrame, path: Path) -> None:

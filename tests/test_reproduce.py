@@ -12,31 +12,38 @@ from ballast.data import FACTORS
 from ballast.report import build_results
 from ballast.synthetic import synthetic_factors
 
+#: Small bootstrap and size study, so the pipeline tests run quickly.
+FAST = {"draws": 49, "size_sims": 4}
+
 
 def test_two_runs_give_identical_tables(tmp_path: Path) -> None:
-    first = build_results(synthetic_factors(), tmp_path / "a", figures=False)
-    second = build_results(synthetic_factors(), tmp_path / "b", figures=False)
+    first = build_results(synthetic_factors(), tmp_path / "a", figures=False, **FAST)
+    second = build_results(synthetic_factors(), tmp_path / "b", figures=False, **FAST)
     assert first.keys() == second.keys()
-    assert len(first) >= 15
+    assert len(first) >= 19
     for name in first:
         assert first[name].read_bytes() == second[name].read_bytes(), name
 
 
 def test_figures_are_written_and_identical(tmp_path: Path) -> None:
     data = synthetic_factors()
-    first = build_results(data, tmp_path / "a")
-    second = build_results(data, tmp_path / "b")
-    for name in ("headline_png", "momentum_png"):
+    first = build_results(data, tmp_path / "a", **FAST)
+    second = build_results(data, tmp_path / "b", **FAST)
+    for name in ("headline_png", "costs_png", "momentum_png"):
         assert first[name].stat().st_size > 10_000
         assert first[name].read_bytes() == second[name].read_bytes()
 
 
 def test_tables_cover_all_six_factors(tmp_path: Path) -> None:
-    written = build_results(synthetic_factors(), tmp_path, figures=False)
+    written = build_results(synthetic_factors(), tmp_path, figures=False, **FAST)
     for name in ("table1_paper_sample", "realtime_paper_sample", "direct_extended"):
         table = pd.read_csv(written[name], index_col=0)
         assert list(table.index) == list(FACTORS)
         assert not table.isna().any().any()
+    for name in ("costs_in_sample", "costs_real_time"):
+        table = pd.read_csv(written[name])
+        assert set(table["sample"]) == {"paper", "extended", "new_months"}
+        assert len(table) == 3 * len(FACTORS) * 4
     headline = written["headline"].read_text(encoding="utf-8")
     assert headline.count("<table>") == 3
 

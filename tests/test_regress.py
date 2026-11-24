@@ -9,7 +9,7 @@ import statsmodels.api as sm
 
 from ballast.analysis import managed_factor
 from ballast.data import FactorData
-from ballast.regress import CovType, ols, spanning_regression
+from ballast.regress import CovType, newey_west_lags, ols, spanning_regression
 
 
 def _data(seed: int, n: int = 400, p: int = 3) -> tuple[np.ndarray, np.ndarray]:
@@ -33,6 +33,26 @@ def test_ols_matches_statsmodels(cov_type: CovType, p: int) -> None:
     assert ours.r2_adj == pytest.approx(ref.rsquared_adj, rel=1e-10)
     assert ours.rmse == pytest.approx(np.sqrt(ref.mse_resid), rel=1e-10)
     assert ours.nobs == int(ref.nobs)
+
+
+@pytest.mark.parametrize("lags", [0, 1, 6])
+def test_newey_west_matches_statsmodels(lags: int) -> None:
+    y, x = _data(11, p=2)
+    ours = ols(y, x, "HAC", lags=lags)
+    ref = sm.OLS(y, sm.add_constant(x)).fit(
+        cov_type="HAC", cov_kwds={"maxlags": lags, "use_correction": False}
+    )
+    np.testing.assert_allclose(ours.se, ref.bse, rtol=1e-10)
+    if lags == 0:
+        np.testing.assert_allclose(ours.se, ols(y, x, "HC0").se, rtol=1e-12)
+
+
+def test_newey_west_default_lags() -> None:
+    assert newey_west_lags(100) == 4
+    assert newey_west_lags(1065) == 6
+    assert newey_west_lags(117) == 4
+    y, x = _data(12, n=300, p=1)
+    np.testing.assert_allclose(ols(y, x, "HAC").se, ols(y, x, "HAC", lags=5).se)
 
 
 def test_one_dimensional_regressor_is_accepted() -> None:

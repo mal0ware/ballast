@@ -1,9 +1,9 @@
 """Our numbers against the papers' printed tables, on the real data.
 
 These need ``data/`` from ``scripts/fetch_data.py`` and are skipped without it
-(CI has no data). The tolerances are loose on purpose: the French library is
-revised with every CRSP update, and the files fetched today are not the files
-the authors used. ``PAPER.md`` lists the cell-by-cell differences.
+(CI has no data). The French library is revised with every CRSP update, and
+the files fetched today are not the files the authors used. ``PAPER.md`` lists
+the cell-by-cell differences.
 """
 
 from __future__ import annotations
@@ -23,7 +23,11 @@ pytestmark = pytest.mark.skipif(
     reason="real data not fetched",
 )
 
-#: Stated tolerances, in the units of each table.
+#: Tolerances, in the units of each table. These were set post hoc, after the
+#: gaps listed in PAPER.md were seen (the Sharpe tolerance was 0.06 and was
+#: widened to 0.08 when RMW's real-time Sharpe ratio missed it). They guard
+#: against regressions in the code. They are not evidence that the
+#: replication is close.
 ALPHA_TOLERANCE = 0.50  # percent per year
 BETA_TOLERANCE = 0.05
 SHARPE_TOLERANCE = 0.08

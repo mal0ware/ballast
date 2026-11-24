@@ -72,6 +72,26 @@ def jobson_korkie(returns_i: Array, returns_j: Array) -> DifferenceTest:
     return DifferenceTest(difference, z, _two_sided(z))
 
 
+def two_sided_p(t: Array) -> Array:
+    """Two-sided normal p-values for an array of t-statistics."""
+    result: Array = 2.0 * norm.sf(np.abs(np.asarray(t, dtype=float)))
+    return result
+
+
+def holm(p_values: Array) -> Array:
+    """Holm (1979) step-down adjusted p-values. ``NaN`` entries are left out and kept."""
+    p = np.asarray(p_values, dtype=float)
+    adjusted = np.full_like(p, np.nan)
+    keep = np.flatnonzero(~np.isnan(p))
+    m = len(keep)
+    order = keep[np.argsort(p[keep], kind="stable")]
+    running = 0.0
+    for rank, i in enumerate(order):
+        running = max(running, min(1.0, (m - rank) * p[i]))
+        adjusted[i] = running
+    return adjusted
+
+
 def cer_difference_test(returns_i: Array, returns_j: Array, gamma: float) -> DifferenceTest:
     """Test of equal CERs, DeMiguel, Garlappi and Uppal (2009).
 
